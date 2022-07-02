@@ -9,7 +9,7 @@
 #                                      | |                                     #
 #                                      |_|                                     #
 #                                                                              #
-#                      written by Maverickcdn April 2022                  v1.0 #
+#                      written by Maverickcdn April 2022                  v1.1 #
 ################################################################################
 # Calculates the difference from last wan-event connected, WAN up event to now
 # script only searches disconnects, it cannot find service outage where you remain connected to your ISP
@@ -27,8 +27,8 @@
 ### Start ######################################################################
 create_wan_event='yes'
 ################################################################################
-version='1.0'
-script_ver_date='April 4 2022'
+version='1.1'
+script_ver_date='July 2 2022'
 script_name_full="/jffs/scripts/$(basename "$0")"
 wan_save_loc='/tmp/wanuptime.save'
 [ ! -x "$script_name_full" ] && chmod a+rx "$script_name_full"
@@ -36,7 +36,7 @@ passed_option="$1" ;[ -z "$passed_option" ] && passed_option='manual'
 F_printf() { printf '%s\n' "$1" ;}
 F_pad() { printf '\n' ;}
 F_sep() { F_printf "--------------------------------------------------------------------------------" ;}
-F_log() { F_printf "$1" | logger -t "wanuptime[$$]" ;}
+F_log() { F_printf "$1" | /usr/sbin/logger -t "wanuptime[$$]" ;}
 F_logp() { F_log "$1" ;F_printf "$1" ;}
 
 # Set search methods
@@ -109,10 +109,10 @@ F_calc_diff() {
 
 	# msg post NTP validation   @ColinTaylor
 	found_line="$(grep -n "$findlast" "/tmp/$found_in" 2> /dev/null | cut -d':' -f1)"
-	ntp_line="$(grep -n "Initial clock set" "/tmp/syslog.log" 2> /dev/null | cut -d':' -f1)"
+	ntp_line="$(grep -n "Initial clock set" "/tmp/syslog.log" 2> /dev/null | tail -n1 | cut -d':' -f1)"
 	ntp_in='recent'
 	if [ -z "$ntp_line" ] ;then
-		ntp_line="$(grep -n "Initial clock set" "/tmp/syslog.log-1" 2> /dev/null | cut -d':' -f1)"
+		ntp_line="$(grep -n "Initial clock set" "/tmp/syslog.log-1" 2> /dev/null | tail-n1 | cut -d':' -f1)"
 		[ -n "$ntp_line" ] && ntp_in='older'
 	fi
 
