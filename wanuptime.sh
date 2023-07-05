@@ -269,14 +269,28 @@ clear
 sed -n '2,13p' "$script_name_full"   # Header
 printf '%52s\n\n' "$(/bin/date +'%c')"
 
+F_fw_check() {
+	build_no="$(nvram get buildno | cut -f1 -d'.')"
+	build_sub="$(nvram get buildno | cut -f2 -d'.')"
+ 
+	if [ "$build_no" = '374' ] ; then
+		F_printf "Johns fork has WAN uptime in the GUI, why use this script?"
+  		F_pad
+	    	exit 0
+	elif [ "$build_no" = '384' ] && [ "$build_sub" -ge 15 ] ; then
+		return 0
+	elif [ "$build_no" = '386' ] || [ "$build_no" = '388' ] ; then
+		return 0
+	else
+		F_pad
+		F_printf "Sorry this version of firmware is not compatible, please update to 384.15 or newer"
+		F_pad
+		exit 1
+	fi
+}	
+
 # Firmware compatibility check
-build_no="$(nvram get buildno | cut -f1 -d'.')"
-build_sub="$(nvram get buildno | cut -f2 -d'.')"
-if [ "$build_no" -ne 386 ] || [ "$build_no" -eq 384 ] && [ "$build_sub" -lt 15 ] ; then
-	F_printf "Sorry, this version of firmware is not compatible, please upgrade to 384.15 or newer" ;F_pad ;exit 0
-elif [ "$build_no" -eq 374 ] ;then
-	F_printf "Johns fork has WAN uptime in the GUI, why use this script?" ;F_pad ;exit 0
-fi
+F_fw_check
 
 # wan-event creation option
 if [ "$passed_option" = 'enable' ] ;then
