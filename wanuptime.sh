@@ -112,7 +112,7 @@ F_calc_diff() {
 	ntp_line="$(grep -n "Initial clock set" "/tmp/syslog.log" 2> /dev/null | tail -n1 | cut -d':' -f1)"
 	ntp_in='recent'
 	if [ -z "$ntp_line" ] ;then
-		ntp_line="$(grep -n "Initial clock set" "/tmp/syslog.log-1" 2> /dev/null | tail-n1 | cut -d':' -f1)"
+		ntp_line="$(grep -n "Initial clock set" "/tmp/syslog.log-1" 2> /dev/null | tail -n1 | cut -d':' -f1)"
 		[ -n "$ntp_line" ] && ntp_in='older'
 	fi
 
