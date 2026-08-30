@@ -272,9 +272,9 @@ printf '%52s\n\n' "$(/bin/date +'%c')"
 F_fw_check() {
 	build_no="$(nvram get buildno | cut -f1 -d'.')"
 	build_sub="$(nvram get buildno | cut -f2 -d'.')"
-	build_base="$(F_nvram firmver | sed 's/\.//g')"
-	# 3006 等新分支 buildno 是 Asus 内部号 (如 102.8)，不含分支号；
-	# 此时用 firmver 3.0.0.X 映射分支号 (3.0.0.6 -> 3006)
+	build_base="$(nvram get firmver | sed 's/\.//g')"
+	# Newer branches (3006 etc) put an Asus internal number in buildno (e.g. 102.8),
+	# so derive the branch from firmver instead (3.0.0.6 -> 3006)
 	case "$build_base" in
 		'3006') return 0 ;;
 	esac
